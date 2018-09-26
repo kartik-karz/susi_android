@@ -39,6 +39,7 @@ class STTfragment : Fragment() {
         return rootView
     }
 
+
     private fun promptSpeechInput() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -79,6 +80,7 @@ class STTfragment : Fragment() {
             override fun onError(error: Int) {
                 Timber.d("Error listening for speech: %s", error)
                 Toast.makeText(activity?.applicationContext, "Could not recognize speech, try again.", Toast.LENGTH_SHORT).show()
+
                 if (speechProgress != null)
                     speechProgress.onResultOrOnError()
                 recognizer.destroy()
@@ -122,6 +124,7 @@ class STTfragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        (activity as ChatActivity).enableVoiceInput()
         (activity as ChatActivity).fabsetting.show()
         recognizer.cancel()
         recognizer.destroy()

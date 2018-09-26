@@ -31,6 +31,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -144,6 +145,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
                     btnSpeak.setOnClickListener {
                         textToSpeech?.stop()
                         chatPresenter.startSpeechInput()
+
                     }
                 }
             }
@@ -251,6 +253,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
         ft.replace(R.id.speechToTextFrame, STTfragment())
         ft.addToBackStack(null)
         ft.commit()
+
     }
 
     //Replies user with Speech
@@ -285,6 +288,12 @@ class ChatActivity : AppCompatActivity(), IChatView {
             }
         }
 
+
+    }
+
+    fun enableVoiceInput() {
+        btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
+        btnSpeak.isClickable = true
     }
 
     override fun showWaitingDots() {
@@ -293,6 +302,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
 
     override fun hideWaitingDots() {
         recyclerAdapter.hideDots()
+
     }
 
     override fun databaseUpdated() {
@@ -341,9 +351,11 @@ class ChatActivity : AppCompatActivity(), IChatView {
             chatPresenter.check(true)
             btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
             btnSpeak.setOnClickListener({
+                btnSpeak.isClickable = false
                 textToSpeech?.stop()
                 chatPresenter.startSpeechInput()
             })
+
         } else {
             chatPresenter.check(false)
             btnSpeak.setImageResource(R.drawable.ic_send_fab)
@@ -355,6 +367,8 @@ class ChatActivity : AppCompatActivity(), IChatView {
                 }
             })
         }
+
+
     }
 
     override fun checkEnterKeyPref(isChecked: Boolean) {
@@ -470,6 +484,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
             chatPresenter.stopHotwordDetection()
 
         textToSpeech?.stop()
+
 
     }
 
