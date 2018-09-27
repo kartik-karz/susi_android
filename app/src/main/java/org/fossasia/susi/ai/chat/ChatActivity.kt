@@ -288,6 +288,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
     }
 
     fun enableVoiceInput() {
+        btnSpeak.visibility = View.VISIBLE
         btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
         btnSpeak.isClickable = true
     }
@@ -347,6 +348,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
             btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
             btnSpeak.setOnClickListener({
                 btnSpeak.isClickable = false
+                btnSpeak.visibility = View.INVISIBLE
                 textToSpeech?.stop()
                 chatPresenter.startSpeechInput()
             })
