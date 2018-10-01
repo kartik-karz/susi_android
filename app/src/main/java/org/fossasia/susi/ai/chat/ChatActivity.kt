@@ -215,7 +215,6 @@ class ChatActivity : AppCompatActivity(), IChatView {
         cardViewWithK.visibility = View.GONE
         cardViewWithoutK.visibility = View.VISIBLE
         checkMicPref(true)
-        spkBtn
         chatPresenter.check(true)
         chatPresenter.startSpeechInput()
     }
