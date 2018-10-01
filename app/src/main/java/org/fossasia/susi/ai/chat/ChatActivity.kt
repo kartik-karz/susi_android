@@ -284,7 +284,11 @@ class ChatActivity : AppCompatActivity(), IChatView {
                 audioFocus.abandonAudioFocus(afChangeListener)
             }
         }
+    }
 
+    fun enableVoiceInput() {
+        btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
+        btnSpeak.isClickable = true
     }
 
     override fun showWaitingDots() {
@@ -341,6 +345,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
             chatPresenter.check(true)
             btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
             btnSpeak.setOnClickListener({
+                btnSpeak.isClickable = false
                 textToSpeech?.stop()
                 chatPresenter.startSpeechInput()
             })
@@ -470,7 +475,6 @@ class ChatActivity : AppCompatActivity(), IChatView {
             chatPresenter.stopHotwordDetection()
 
         textToSpeech?.stop()
-
     }
 
     override fun onDestroy() {
