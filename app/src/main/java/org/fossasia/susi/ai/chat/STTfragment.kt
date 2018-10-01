@@ -122,6 +122,9 @@ class STTfragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        if ( activity is ChatActivity) {
+            (activity as ChatActivity).enableVoiceInput()
+        }
         (activity as ChatActivity).fabsetting.show()
         recognizer.cancel()
         recognizer.destroy()
