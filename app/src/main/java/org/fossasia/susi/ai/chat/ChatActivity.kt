@@ -21,16 +21,20 @@ import android.speech.tts.UtteranceProgressListener
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -72,7 +76,11 @@ class ChatActivity : AppCompatActivity(), IChatView {
         if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
             textToSpeech?.stop()
         }
+
     }
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +106,18 @@ class ChatActivity : AppCompatActivity(), IChatView {
                 chatPresenter.startComputingThread()
             }
         }
+
+        val cardViewWithK = findViewById<CardView>(R.id.with_keyboard)
+        val cardViewWithoutK = findViewById<CardView>(R.id.without_keyboard)
+
+        val keyboard = findViewById<View>(R.id.btn_keyboard)
+        keyboard.setOnClickListener({
+            cardViewWithK.visibility = View.VISIBLE
+            cardViewWithoutK.visibility = View.GONE
+
+
+    })
+
     }
 
     // This method is used to set up the UI components
@@ -128,8 +148,8 @@ class ChatActivity : AppCompatActivity(), IChatView {
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.toString().trim { it <= ' ' }.isNotEmpty() || !chatPresenter.micCheck()) {
-                    btnSpeak.setImageResource(R.drawable.ic_send_fab)
-                    btnSpeak.setOnClickListener({
+                    btnSpeak_wK.setImageResource(R.drawable.ic_send_fab)
+                    btnSpeak_wK.setOnClickListener({
                         chatPresenter.check(false)
                         val chatMessage = askSusiMessage.text.toString().trim({ it <= ' ' })
                         val splits = chatMessage.split("\n".toRegex()).dropLastWhile({ it.isEmpty() })
@@ -140,10 +160,11 @@ class ChatActivity : AppCompatActivity(), IChatView {
                         }
                     })
                 } else {
-                    btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
-                    btnSpeak.setOnClickListener {
+                    btnSpeak_wK.setImageResource(R.drawable.ic_mic_24dp)
+                    btnSpeak_wK.setOnClickListener {
                         textToSpeech?.stop()
-                        chatPresenter.startSpeechInput()
+                        startKeyboard()
+
                     }
                 }
             }
@@ -185,6 +206,18 @@ class ChatActivity : AppCompatActivity(), IChatView {
             }
             false
         })
+    }
+
+    fun startKeyboard(){
+        val cardViewWithK = findViewById<CardView>(R.id.with_keyboard)
+        val cardViewWithoutK = findViewById<CardView>(R.id.without_keyboard)
+
+        cardViewWithK.visibility = View.GONE
+        cardViewWithoutK.visibility = View.VISIBLE
+        checkMicPref(true)
+        spkBtn
+        chatPresenter.check(true)
+        chatPresenter.startSpeechInput()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -345,6 +378,7 @@ class ChatActivity : AppCompatActivity(), IChatView {
     override fun checkMicPref(micCheck: Boolean) {
         if (micCheck) {
             chatPresenter.check(true)
+
             btnSpeak.setImageResource(R.drawable.ic_mic_24dp)
             btnSpeak.setOnClickListener({
                 btnSpeak.isClickable = false
