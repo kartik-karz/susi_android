@@ -141,6 +141,8 @@ class ChatActivity : AppCompatActivity(), IChatView {
     }
 
     private fun setEditText() {
+
+        setUpWkButton()
         val watch = object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 //do whatever you want to do before text change in input edit text
@@ -160,13 +162,9 @@ class ChatActivity : AppCompatActivity(), IChatView {
                         }
                     })
                 } else {
-                    btnSpeak_wK.setImageResource(R.drawable.ic_mic_24dp)
-                    btnSpeak_wK.setOnClickListener {
-                        textToSpeech?.stop()
-                        startKeyboard()
-
+                    setUpWkButton()
                     }
-                }
+
             }
 
             override fun afterTextChanged(editable: Editable) {
@@ -208,14 +206,26 @@ class ChatActivity : AppCompatActivity(), IChatView {
         })
     }
 
+    private fun setUpWkButton() {
+        btnSpeak_wK.setImageResource(R.drawable.ic_mic_24dp)
+        btnSpeak_wK.setOnClickListener {
+            textToSpeech?.stop()
+            btnSpeak.isEnabled = true
+            startKeyboard()
+
+        }
+    }
+
     fun startKeyboard(){
         val cardViewWithK = findViewById<CardView>(R.id.with_keyboard)
         val cardViewWithoutK = findViewById<CardView>(R.id.without_keyboard)
 
         cardViewWithK.visibility = View.GONE
         cardViewWithoutK.visibility = View.VISIBLE
+        setUpWkButton()
         checkMicPref(true)
         chatPresenter.check(true)
+        btnSpeak.visibility = View.INVISIBLE
         chatPresenter.startSpeechInput()
     }
 
